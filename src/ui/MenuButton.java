@@ -15,6 +15,8 @@ public class MenuButton {
     boolean mouseOver, mousePressed;
     Rectangle bounds;
 
+    public int x, y, width, height;
+
     public MenuButton(
             int xPos, int yPos,
             int rowIndex,
@@ -23,6 +25,17 @@ public class MenuButton {
         this.yPos = yPos;
         this.rowIndex = rowIndex;
         this.state = state;
+        loadImgs();
+        initBounds();
+    }
+
+    public MenuButton(int x, int y, int width, int height,
+            int rowIndex) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.rowIndex = rowIndex;
         loadImgs();
         initBounds();
     }
@@ -84,6 +97,10 @@ public class MenuButton {
     public void resetBools() {
         mouseOver = false;
         mousePressed = false;
+    }
+
+    public void resetIndex() {
+        index = 0;
     }
 
     public Rectangle getBounds() {

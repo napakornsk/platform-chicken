@@ -5,6 +5,8 @@ import level.Level;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.geom.Rectangle2D;
 
 import utils.LoadSave;
@@ -18,10 +20,11 @@ import Entity.Player;
 
 import java.awt.image.BufferedImage;
 
+import static main.Game.TILE_SIZE;
 import static utils.Constant.Directions.ENEMY_DIR_LEFT;
 import static utils.Constant.ObjectConstants.*;
 import static utils.Constant.Projectile.*;
-import static utils.Helper.IsProjectileHittingLevel;;
+import static utils.Helper.IsProjectileHittingLevel;
 
 public class ObjectManager {
     Playing playing;
@@ -92,8 +95,6 @@ public class ObjectManager {
                 new Projectile((int) enemy.getHitbox().x,
                         (int) enemy.getHitbox().y, dir));
 
-        System.out.println("projectile size: " + projectiles.size());
-
     }
 
     void updateProjectiles(int[][] lvlData, Player player) {
@@ -118,6 +119,29 @@ public class ObjectManager {
     public void draw(Graphics g, int xLvlOffset) {
         drawHaystacks(g, xLvlOffset);
         drawProjectiles(g, xLvlOffset);
+        drawCollectedHaystack(g, xLvlOffset);
+    }
+
+    private void drawCollectedHaystack(Graphics g, int xLvlOffset) {
+        String collectHaystack = String.valueOf(playing.getPlayer().getCollectedHaystack());
+        String maxCollectHaystack = String.valueOf(playing.getPlayer().getMaxCollectedHaystack());
+        String text = "Haystack " + collectHaystack + " / " + maxCollectHaystack;
+
+        // Set the font
+        g.setFont(new Font("SansSerif", Font.BOLD, 24));
+
+        // Measure the text size
+        FontMetrics metrics = g.getFontMetrics(g.getFont());
+        int textWidth = metrics.stringWidth(text);
+        int textHeight = metrics.getHeight();
+
+        // Draw background rectangle
+        g.setColor(new Color(0, 0, 0, 150)); // Semi-transparent black
+        g.fillRect(xLvlOffset + 10, 80, textWidth + 20, textHeight); // Positioned slightly offset
+
+        // Set text color and draw the string
+        g.setColor(Color.WHITE);
+        g.drawString(text, xLvlOffset + 20, (80 + metrics.getAscent())); // Y position adjusted for ascent
     }
 
     private void drawProjectiles(Graphics g, int xLvlOffset) {

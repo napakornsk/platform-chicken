@@ -18,6 +18,7 @@ import Entity.Player;
 import level.LevelManager;
 import main.Game;
 import object.ObjectManager;
+// import ui.LevelCompletedOverlay;
 import utils.LoadSave;
 import static utils.Constant.Environment.*;
 import java.util.ArrayList;
@@ -47,6 +48,11 @@ public class Playing extends State implements StateMethod {
 
     // state
     boolean isGameOver = false;
+    boolean isWin = false;
+    boolean playerDying = false;
+    // LevelCompletedOverlay levelCompletedOverlay;
+    Lost lost;
+    Win win;
 
     public Playing(Game game) {
         super(game);
@@ -68,26 +74,40 @@ public class Playing extends State implements StateMethod {
                 Game.TILE_SIZE * 1.2f, Game.TILE_SIZE * 1.2f,
                 this);
         player.loadLvlData(levelManager.getCurrentLevel().getLevelData());
+        lost = new Lost(this);
+        win = new Win(this);
+        // levelCompletedOverlay = new LevelCompletedOverlay(this);
     }
 
     @Override
     public void update() {
-        levelManager.update();
-        player.update();
-        enemyManager.update(
-                levelManager.getCurrentLevel().getLevelData(),
-                player);
+        if (!isGameOver) {
+            levelManager.update();
+            player.update();
+            enemyManager.update(
+                    levelManager.getCurrentLevel().getLevelData(),
+                    player);
 
-        objectManager.loadObjects(
-                levelManager.getCurrentLevel());
-        objectManager.update(
-                levelManager.getCurrentLevel().getLevelData(),
-                player);
-        checkCloseToBoder();
+            objectManager.loadObjects(
+                    levelManager.getCurrentLevel());
+            objectManager.update(
+                    levelManager.getCurrentLevel().getLevelData(),
+                    player);
+            checkCloseToBoder();
+        }
+
+        if (isWin) {
+            win.update();
+        } else if (isGameOver) {
+            lost.update();
+        }
+
     }
 
     public void resetAll() {
         isGameOver = false;
+        isWin = false;
+        player.resetAll();
         objectManager.resetAllObjects();
     }
 
@@ -105,13 +125,20 @@ public class Playing extends State implements StateMethod {
 
     @Override
     public void draw(Graphics g) {
-        g.drawImage(bgImg, 0, 0, GAME_WIDTH, GAME_HEIGHT, null);
-        drawClouds(g);
-        levelManager.draw(g, xLvlOffset);
-        player.render(g, xLvlOffset);
-        enemyManager.draw(g, xLvlOffset);
-        // g.drawImage(objectManager.getHaystackSprite(), 100, 100, 256, 32, null);
-        objectManager.draw(g, xLvlOffset);
+        if (!isGameOver) {
+            g.drawImage(bgImg, 0, 0, GAME_WIDTH, GAME_HEIGHT, null);
+            drawClouds(g);
+            levelManager.draw(g, xLvlOffset);
+            player.render(g, xLvlOffset);
+            enemyManager.draw(g, xLvlOffset);
+            objectManager.draw(g, xLvlOffset);
+        }
+
+        if (isWin) {
+            win.draw(g);
+        } else if (isGameOver) {
+            lost.draw(g);
+        }
 
     }
 
@@ -130,6 +157,9 @@ public class Playing extends State implements StateMethod {
     }
 
     public void checkHaystackTouched(Rectangle2D.Float hitbox) {
+        if (player.getCollectedHaystack() > player.getMaxCollectedHaystack() - 1) {
+            isWin = true;
+        }
         objectManager.checkObjectTouched(hitbox);
     }
 
@@ -139,14 +169,35 @@ public class Playing extends State implements StateMethod {
 
     @Override
     public void mousePressed(MouseEvent e) {
+        if (isGameOver) {
+            lost.mousePressed(e);
+        }
+
+        if (isWin) {
+            win.mousePressed(e);
+        }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        if (isGameOver) {
+            lost.mouseReleased(e);
+        }
+
+        if (isWin) {
+            win.mouseReleased(e);
+        }
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        if (isGameOver) {
+            lost.mouseMoved(e);
+        }
+
+        if (isWin) {
+            win.mouseMoved(e);
+        }
     }
 
     @Override
@@ -204,5 +255,9 @@ public class Playing extends State implements StateMethod {
 
     public void setGameOver(boolean isGameOver) {
         this.isGameOver = isGameOver;
+    }
+
+    public void setPlayerDying(boolean b) {
+        this.playerDying = b;
     }
 }

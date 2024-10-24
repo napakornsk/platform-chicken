@@ -31,6 +31,9 @@ public class LoadSave {
     public static final String BULLET = "resources/enemy/bullet.png";
     public static final String HAYSTACK = "resources/level/haystack.png";
 
+    public static final String LOST_BG = "resources/level/lost-bg.jpg";
+    public static final String WIN_BG = "resources/level/win-bg.jpg";
+
     public static BufferedImage GetSpriteAtLast(String filePath) {
         BufferedImage img = null;
         InputStream is = LoadSave.class.getResourceAsStream("/" + filePath);

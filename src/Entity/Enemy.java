@@ -169,4 +169,12 @@ public abstract class Enemy extends Entity {
     public int getWalkDir() {
         return walkDir;
     }
+
+    public void resetEnemy() {
+        hitbox.x = x;
+        hitbox.y = y;
+        firstUpdate = true;
+        newState(ENEMY_DIR_LEFT);
+        airSpeed = 0;
+    }
 }

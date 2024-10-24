@@ -5,6 +5,7 @@ import object.ObjectManager;
 import utils.LoadSave;
 
 import static utils.Constant.Directions.ENEMY_DIR_LEFT;
+import static utils.Constant.Directions.ENEMY_DIR_RIGHT;
 import static utils.Constant.EnemyConstants.BABY_CHICK_HEIGHT;
 import static utils.Constant.EnemyConstants.BABY_CHICK_HEIGHT_DEFAULT;
 import static utils.Constant.EnemyConstants.BABY_CHICK_WIDTH;
@@ -51,18 +52,17 @@ public class EnemyManager {
             int width = BABY_CHICK_WIDTH;
             int height = BABY_CHICK_HEIGHT;
 
-            // Check the enemy's direction and flip if needed
-            if (b.getWalkDir() == ENEMY_DIR_LEFT) {
-                // Flip the image horizontally when walking left
+            // check the enemy's direction and flip the image in place
+            if (b.getWalkDir() == ENEMY_DIR_RIGHT) {
+                // Flip in place for walking right
                 g2d.drawImage(babyChickArr[b.getEnemyState()][b.getAnimIndex()],
-                        x + width, y, width, height, null);
+                        x + width, y, -width, height, null);
             } else {
-                // Normal drawing when walking right
+                // Normal drawing for walking left
                 g2d.drawImage(babyChickArr[b.getEnemyState()][b.getAnimIndex()],
-                        x, y, -width, height, null);
+                        x, y, width, height, null);
             }
 
-            // Optionally draw the hitbox
             b.drawHitbox(g, xLvlOffset, Color.MAGENTA);
         }
     }
@@ -79,6 +79,12 @@ public class EnemyManager {
                         BABY_CHICK_WIDTH_DEFAULT,
                         BABY_CHICK_HEIGHT_DEFAULT);
             }
+        }
+    }
+
+    public void resetAllEnemies() {
+        for (BabyChick b : babyChicks) {
+            b.resetEnemy();
         }
     }
 }

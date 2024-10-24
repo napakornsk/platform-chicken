@@ -4,6 +4,7 @@ import java.awt.Graphics;
 
 import Entity.Player;
 import gameState.GameState;
+import gameState.Lost;
 import gameState.Menu;
 import gameState.Playing;
 import level.LevelManager;
@@ -16,6 +17,7 @@ public class Game implements Runnable {
     final int UPS_SET = 200;
     Playing playing;
     Menu menu;
+    Lost lost;
 
     public final static int TILE_DEFAULT_SIZE = 32;
     public final static float SCALE = 1.5f;
@@ -39,6 +41,7 @@ public class Game implements Runnable {
     private void initClasses() {
         menu = new Menu(this);
         playing = new Playing(this);
+        // lost = new Lost(this);
     }
 
     void initGameLoop() {
@@ -47,7 +50,6 @@ public class Game implements Runnable {
     }
 
     public void update() {
-
         switch (GameState.state) {
             case MENU:
                 menu.update();
@@ -55,7 +57,11 @@ public class Game implements Runnable {
             case PLAYING:
                 playing.update();
                 break;
+            // case LOST:
+            // lost.update();
+            // break;
             case QUIT:
+                System.out.println("out!!!");
                 System.exit(0);
                 break;
             default:
@@ -71,6 +77,8 @@ public class Game implements Runnable {
             case PLAYING:
                 playing.draw(g);
                 break;
+            // case LOST:
+            //     lost.draw(g);
             default:
                 break;
         }
@@ -110,12 +118,6 @@ public class Game implements Runnable {
                 deltaF--;
                 frame++;
             }
-
-            // if (now - lastFrame >= timePerFrame) {
-            // gP.repaint();
-            // lastFrame = now;
-            // frame++;
-            // }
 
             if (System.currentTimeMillis() - lastCheck >= 1000) {
                 lastCheck = System.currentTimeMillis();

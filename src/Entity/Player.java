@@ -12,6 +12,7 @@ import static utils.Constant.PlayerConstants.*;
 import static main.Game.SCALE;
 import static main.Game.TILE_SIZE;
 import static utils.Constant.Directions.*;
+import static utils.Constant.EnemyConstants.IDLE;
 import static utils.Helper.*;
 import static utils.Constant.Entity.*;
 
@@ -43,10 +44,12 @@ public class Player extends Entity {
 
     // haystack
     int collectedHaystack = 0;
+
     int maxCollectedHaystack = 10;
 
     // state
     Playing playing;
+    int state;
 
     public Player(float x, float y, float width, float height, Playing playing) {
         super(x, y, width, height);
@@ -54,12 +57,20 @@ public class Player extends Entity {
         loadAnimation();
         initHitbox(28, 32);
         hp = maxHp;
-
+        state = RIGHT;
     }
 
     public void update() {
-        if (hp < 1)
+        if (hp < 1) {
+            if (state != DEAD) {
+                state = DEAD;
+                animTick = 0;
+                animIndex = 0;
+                playing.setPlayerDying(true);
+            }
             playing.setGameOver(true);
+            return;
+        }
 
         updatePos();
         updateAnimTick();
@@ -84,7 +95,6 @@ public class Player extends Entity {
 
     public void collectHaystack(int amount) {
         collectedHaystack += amount;
-        System.out.println("collected haystack: " + collectedHaystack);
     }
 
     public void render(Graphics g, int lvlOffset) {
@@ -128,10 +138,6 @@ public class Player extends Entity {
             playerAction = RIGHT;
             xSpeed += speed;
         }
-
-        // if (xSpeed == 0 && !inAir) {
-        // return;
-        // }
 
         if (!inAir) {
             if (!isEntityOnFloor(hitbox, lvlData))
@@ -236,6 +242,21 @@ public class Player extends Entity {
         isMoving = false;
     }
 
+    public void resetAll() {
+        inAir = false;
+        airSpeed = 0f;
+        state = RIGHT;
+        hp = maxHp;
+        hitbox.x = x;
+        hitbox.y = y;
+        resetAnimTick();
+        resetBooleans();
+        setCollectedHaystack(0);
+
+        if (!isEntityOnFloor(hitbox, lvlData))
+            inAir = true;
+    }
+
     public boolean isLeft() {
         return left;
     }
@@ -279,5 +300,17 @@ public class Player extends Entity {
         if (startAnim != playerAction) {
             resetAnimTick();
         }
+    }
+
+    public int getCollectedHaystack() {
+        return collectedHaystack;
+    }
+
+    public void setCollectedHaystack(int collectedHaystack) {
+        this.collectedHaystack = collectedHaystack;
+    }
+
+    public int getMaxCollectedHaystack() {
+        return maxCollectedHaystack;
     }
 }
