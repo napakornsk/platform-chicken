@@ -63,7 +63,7 @@ public class EnemyManager {
                         x, y, width, height, null);
             }
 
-            b.drawHitbox(g, xLvlOffset, Color.MAGENTA);
+            // b.drawHitbox(g, xLvlOffset, Color.MAGENTA);
         }
     }
 

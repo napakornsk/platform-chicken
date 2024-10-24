@@ -137,11 +137,11 @@ public class ObjectManager {
 
         // Draw background rectangle
         g.setColor(new Color(0, 0, 0, 150)); // Semi-transparent black
-        g.fillRect(xLvlOffset + 10, 80, textWidth + 20, textHeight); // Positioned slightly offset
+        g.fillRect(10, 80, textWidth + 20, textHeight); // Positioned slightly offset
 
         // Set text color and draw the string
         g.setColor(Color.WHITE);
-        g.drawString(text, xLvlOffset + 20, (80 + metrics.getAscent())); // Y position adjusted for ascent
+        g.drawString(text, 20, (80 + metrics.getAscent())); // Y position adjusted for ascent
     }
 
     private void drawProjectiles(Graphics g, int xLvlOffset) {
@@ -159,7 +159,7 @@ public class ObjectManager {
                     iterator.remove(); // Safely remove inactive projectiles
                 }
 
-                p.drawHitbox(g, xLvlOffset, Color.RED);
+                // p.drawHitbox(g, xLvlOffset, Color.RED);
             }
         }
     }
@@ -177,7 +177,7 @@ public class ObjectManager {
                             null);
                 }
             }
-            h.drawHitbox(g, xLvlOffset, Color.PINK);
+            // h.drawHitbox(g, xLvlOffset, Color.PINK);
         }
     }
 

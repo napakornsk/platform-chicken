@@ -104,7 +104,7 @@ public class Player extends Entity {
                 (int) (hitbox.x - xDrawOffset) - lvlOffset, (int) (hitbox.y - yDrawOffset),
                 (int) width, (int) height,
                 null);
-        drawHitbox(g, (int) lvlOffset, Color.BLACK);
+        // drawHitbox(g, (int) lvlOffset, Color.BLACK);
     }
 
     public void setDirection(int dir) {
