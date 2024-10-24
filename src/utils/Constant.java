@@ -12,13 +12,15 @@ public class Constant {
 
     public static class ObjectConstants {
         public static final int HAYSTACK = 5;
-        
+
+        public static final int HAYSTACK_COLLECT_AMOUNT = 1;
+
         public static final int HAYSTACK_WIDTH_DEFAULT = 32;
         public static final int HAYSTACK_HEIGHT_DEFAULT = 32;
 
         public static final int HAYSTACK_WIDTH = (int) (SCALE * HAYSTACK_WIDTH_DEFAULT);
         public static final int HAYSTACK_HEIGHT = (int) (SCALE * HAYSTACK_HEIGHT_DEFAULT);
-    
+
         public static int GetSpriteAmount(int objType) {
             switch (objType) {
                 case HAYSTACK:
@@ -35,10 +37,9 @@ public class Constant {
 
         public static final int BULLET_WIDTH = (int) (BULLET_DEFAULT_WIDTH * SCALE);
         public static final int BULLET_HEIGHT = (int) (BULLET_DEFAULT_HEIGHT * SCALE);
-        
+
         public static final float SPEED = 0.5f * SCALE;
     }
-
 
     public static class EnemyConstants {
         public static final int BABY_CHICK = 10;

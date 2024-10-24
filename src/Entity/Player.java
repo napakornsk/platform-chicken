@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
+import gameState.Playing;
 import main.Game;
 import utils.LoadSave;
 
@@ -19,6 +20,8 @@ public class Player extends Entity {
     BufferedImage[][] animation;
 
     int animTick, animIndex, animSpeed = 40;
+    boolean left, right, up, isJump;
+    float speed = 1.0f * SCALE;
     int playerAction = RIGHT;
     int playerDir = 0;
     // int collected = 0;
@@ -38,46 +41,34 @@ public class Player extends Entity {
     int hp;
     BufferedImage heartImg;
 
-    public boolean isActaking() {
-        return isActaking;
-    }
+    // haystack
+    int collectedHaystack = 0;
+    int maxCollectedHaystack = 10;
 
-    public void setActaking(boolean isActaking) {
-        this.isActaking = isActaking;
-    }
+    // state
+    Playing playing;
 
-    boolean left, right, up, isJump;
-
-    float speed = 1.0f * SCALE;
-
-    public int getPlayerAction() {
-        return playerAction;
-    }
-
-    public void setPlayerAction(int playerAction) {
-        this.playerAction = playerAction;
-        int startAnim = playerAction;
-
-        if (startAnim != playerAction) {
-            resetAnimTick();
-        }
-    }
-
-    private void resetAnimTick() {
-        animTick = 0;
-        animIndex = 0;
-    }
-
-    public Player(float x, float y, float width, float height) {
+    public Player(float x, float y, float width, float height, Playing playing) {
         super(x, y, width, height);
+        this.playing = playing;
         loadAnimation();
         initHitbox(28, 32);
         hp = maxHp;
+
     }
 
     public void update() {
+        if (hp < 1)
+            playing.setGameOver(true);
+
         updatePos();
         updateAnimTick();
+        if (isMoving)
+            checkHaystackTouched();
+    }
+
+    private void checkHaystackTouched() {
+        playing.checkHaystackTouched(hitbox);
     }
 
     public void updateHp(Graphics g) {
@@ -89,6 +80,11 @@ public class Player extends Entity {
 
     public void hurt() {
         hp--;
+    }
+
+    public void collectHaystack(int amount) {
+        collectedHaystack += amount;
+        System.out.println("collected haystack: " + collectedHaystack);
     }
 
     public void render(Graphics g, int lvlOffset) {
@@ -213,6 +209,11 @@ public class Player extends Entity {
         }
     }
 
+    private void resetAnimTick() {
+        animTick = 0;
+        animIndex = 0;
+    }
+
     private void loadAnimation() {
         BufferedImage img = LoadSave.GetSpriteAtLast(LoadSave.PLAYER_ATLAS);
         animation = new BufferedImage[8][4];
@@ -257,5 +258,26 @@ public class Player extends Entity {
 
     public void setJump(boolean isJump) {
         this.isJump = isJump;
+    }
+
+    public boolean isActaking() {
+        return isActaking;
+    }
+
+    public void setActaking(boolean isActaking) {
+        this.isActaking = isActaking;
+    }
+
+    public int getPlayerAction() {
+        return playerAction;
+    }
+
+    public void setPlayerAction(int playerAction) {
+        this.playerAction = playerAction;
+        int startAnim = playerAction;
+
+        if (startAnim != playerAction) {
+            resetAnimTick();
+        }
     }
 }

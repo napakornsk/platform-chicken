@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Rectangle2D;
 
 import Entity.EnemyManager;
 
@@ -44,6 +45,9 @@ public class Playing extends State implements StateMethod {
     // objects
     ObjectManager objectManager;
 
+    // state
+    boolean isGameOver = false;
+
     public Playing(Game game) {
         super(game);
         initClasses();
@@ -58,10 +62,12 @@ public class Playing extends State implements StateMethod {
 
     void initClasses() {
         levelManager = new LevelManager(game);
-        enemyManager = new EnemyManager(this);
-        player = new Player(200, 400, Game.TILE_SIZE * 1.2f, Game.TILE_SIZE * 1.2f);
-        player.loadLvlData(levelManager.getCurrentLevel().getLevelData());
         objectManager = new ObjectManager(this);
+        enemyManager = new EnemyManager(this, this.objectManager);
+        player = new Player(200, 400,
+                Game.TILE_SIZE * 1.2f, Game.TILE_SIZE * 1.2f,
+                this);
+        player.loadLvlData(levelManager.getCurrentLevel().getLevelData());
     }
 
     @Override
@@ -69,11 +75,20 @@ public class Playing extends State implements StateMethod {
         levelManager.update();
         player.update();
         enemyManager.update(
-            levelManager.getCurrentLevel().getLevelData(),
-            player);
-            
-        objectManager.update();
+                levelManager.getCurrentLevel().getLevelData(),
+                player);
+
+        objectManager.loadObjects(
+                levelManager.getCurrentLevel());
+        objectManager.update(
+                levelManager.getCurrentLevel().getLevelData(),
+                player);
         checkCloseToBoder();
+    }
+
+    public void resetAll() {
+        isGameOver = false;
+        objectManager.resetAllObjects();
     }
 
     private void checkCloseToBoder() {
@@ -112,6 +127,10 @@ public class Playing extends State implements StateMethod {
                     smallCloudPos[i],
                     SMALL_CLOUD_WIDTH, SMALL_CLOUD_HEIGHT, null);
         }
+    }
+
+    public void checkHaystackTouched(Rectangle2D.Float hitbox) {
+        objectManager.checkObjectTouched(hitbox);
     }
 
     @Override
@@ -177,5 +196,13 @@ public class Playing extends State implements StateMethod {
 
     public ObjectManager getObjectManager() {
         return objectManager;
+    }
+
+    public boolean isGameOver() {
+        return isGameOver;
+    }
+
+    public void setGameOver(boolean isGameOver) {
+        this.isGameOver = isGameOver;
     }
 }

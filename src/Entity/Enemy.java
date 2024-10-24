@@ -7,11 +7,13 @@ import static utils.Helper.CanMoveHere;
 import static utils.Helper.GetEntityYPosUnderRoofOrAboveFloor;
 import static utils.Helper.isEntityOnFloor;
 
-
 import static utils.Helper.IsFloor;
 import static utils.Helper.IsSightClear;
 import static utils.Constant.Entity.*;
 import static utils.Constant.Directions.*;
+
+import object.ObjectManager;
+import object.Projectile;
 
 public abstract class Enemy extends Entity {
     protected int animIndex, enemyState, enemyType;
@@ -23,15 +25,21 @@ public abstract class Enemy extends Entity {
     protected float gravity = 0.04f * SCALE;
     protected float walkSpeed = 0.4f * SCALE;
     protected int walkDir = ENEMY_DIR_LEFT;
+
     protected int tileY;
-    protected float attackDistance = 4.0f * TILE_SIZE;
+    protected float attackDistance = 7.0f * TILE_SIZE;
     float absValue;
     float detectionRange;
+    protected boolean canAttack = true;
+    protected long lastShotTime = 0;
 
-    public Enemy(float x, float y, float width, float height, int enemyType) {
+    ObjectManager objectManager;
+
+    public Enemy(float x, float y, float width, float height, int enemyType, ObjectManager objectManager) {
         super(x, y, width, height);
         this.enemyType = enemyType;
         initHitbox((int) width, (int) height);
+        this.objectManager = objectManager;
     }
 
     protected void firstUpdateCheck(int[][] lvlData) {
@@ -45,8 +53,8 @@ public abstract class Enemy extends Entity {
                 hitbox.x, hitbox.y + airSpeed,
                 hitbox.width, hitbox.height,
                 lvlData)) {
-                    hitbox.y += airSpeed;
-                    airSpeed += GRAVITY;
+            hitbox.y += airSpeed;
+            airSpeed += GRAVITY;
         } else {
             inAir = false;
             hitbox.y = GetEntityYPosUnderRoofOrAboveFloor(hitbox, airSpeed);
@@ -91,23 +99,10 @@ public abstract class Enemy extends Entity {
         if (absYDiff <= verticalRange) {
             if (isPlayerInRange(player)) {
                 return true;
-                // if (IsSightClear(lvlData, hitbox, player.hitbox, tileY)) {
-                //     return true;
-                // }
             }
         }
 
-        // System.out.println("canSeePlayer: false after checks.");
         return false;
-
-        // int playerTileY = (int) (player.getHitbox().y / TILE_SIZE);
-        // if (playerTileY == tileY)
-        // if (isPlayerInRange(player)) {
-        // if (IsSightClear(lvlData, hitbox, player.hitbox, tileY))
-        // return true;
-        // }
-
-        // return false;
     }
 
     protected boolean isPlayerInRange(Player player) {
@@ -119,6 +114,14 @@ public abstract class Enemy extends Entity {
     protected boolean isPlayerCloseForAttack(Player player) {
         float absValue = Math.abs(player.hitbox.x - hitbox.x);
         return absValue <= attackDistance;
+    }
+
+    public void attack() {
+        if (canAttack) {
+            canAttack = false;
+            lastShotTime = System.currentTimeMillis();
+            objectManager.shootBullet(this);
+        }
     }
 
     protected void newState(int enemyState) {
@@ -161,5 +164,9 @@ public abstract class Enemy extends Entity {
 
     public void setEnemyState(int enemyState) {
         this.enemyState = enemyState;
+    }
+
+    public int getWalkDir() {
+        return walkDir;
     }
 }

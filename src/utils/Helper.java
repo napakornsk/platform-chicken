@@ -1,9 +1,16 @@
 package utils;
 
 import static main.Game.TILE_SIZE;
+import static utils.Constant.ObjectConstants.HAYSTACK;
 
+import java.awt.Color;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+
 import main.Game;
+import object.Haystack;
+import object.Projectile;
 
 public class Helper {
     public static boolean CanMoveHere(
@@ -86,20 +93,20 @@ public class Helper {
     }
 
     public static boolean IsAllTileClear(int xStart, int xEnd, int y, int[][] lvlData) {
-		for (int i = 0; i < xEnd - xStart; i++)
-			if (IsTileSolid(xStart + i, y, lvlData))
-				return false;
-		return true;
-	}
+        for (int i = 0; i < xEnd - xStart; i++)
+            if (IsTileSolid(xStart + i, y, lvlData))
+                return false;
+        return true;
+    }
 
-	public static boolean IsAllTileWalkable(int xStart, int xEnd, int y, int[][] lvlData) {
-		if (IsAllTileClear(xStart, xEnd, y, lvlData))
-			for (int i = 0; i < xEnd - xStart; i++) {
-				if (!IsTileSolid(xStart + i, y + 1, lvlData))
-					return false;
-			}
-		return true;
-	}
+    public static boolean IsAllTileWalkable(int xStart, int xEnd, int y, int[][] lvlData) {
+        if (IsAllTileClear(xStart, xEnd, y, lvlData))
+            for (int i = 0; i < xEnd - xStart; i++) {
+                if (!IsTileSolid(xStart + i, y + 1, lvlData))
+                    return false;
+            }
+        return true;
+    }
 
     public static boolean IsSightClear(int[][] lvlData, Rectangle2D.Float enemyBox, Rectangle2D.Float playerBox,
             int yTile) {
@@ -117,14 +124,21 @@ public class Helper {
             return IsAllTileWalkable(firstXTile, secondXTile, yTile, lvlData);
     }
 
-    // public static boolean IsSightClear(
-    // int[][] lvlData, Rectangle2D.Float firstHitbox,
-    // Rectangle2D.Float secondHitbox, int tileY) {
-    // int firstXTile = (int) (firstHitbox.x / TILE_SIZE);
-    // int secondXTile = (int) (secondHitbox.x / TILE_SIZE);
-    // if (firstXTile > secondXTile)
-    // return IsAllTileWalkable(secondXTile, firstXTile, tileY, lvlData);
-    // else
-    // return IsAllTileWalkable(firstXTile, secondXTile, tileY, lvlData);
-    // }
+    public static ArrayList<Haystack> getHaystacks(BufferedImage img) {
+        ArrayList<Haystack> list = new ArrayList<>();
+        for (int j = 0; j < img.getHeight(); j++) {
+            for (int i = 0; i < img.getWidth(); i++) {
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getBlue();
+                if (value == HAYSTACK)
+                    list.add(new Haystack(i * TILE_SIZE,
+                            j * TILE_SIZE, HAYSTACK));
+            }
+        }
+        return list;
+    }
+
+    public static boolean IsProjectileHittingLevel(Projectile p, int[][] lvlData) {
+		return IsSolid(p.getHitbox().x + p.getHitbox().width / 2, p.getHitbox().y + p.getHitbox().height / 2, lvlData);
+	}
 }

@@ -1,8 +1,10 @@
 package Entity;
 
 import gameState.Playing;
+import object.ObjectManager;
 import utils.LoadSave;
 
+import static utils.Constant.Directions.ENEMY_DIR_LEFT;
 import static utils.Constant.EnemyConstants.BABY_CHICK_HEIGHT;
 import static utils.Constant.EnemyConstants.BABY_CHICK_HEIGHT_DEFAULT;
 import static utils.Constant.EnemyConstants.BABY_CHICK_WIDTH;
@@ -11,6 +13,7 @@ import static utils.Constant.EnemyConstants.BABY_CHICK_WIDTH_DEFAULT;
 import java.awt.image.BufferedImage;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 
 public class EnemyManager {
@@ -18,14 +21,14 @@ public class EnemyManager {
     BufferedImage[][] babyChickArr;
     ArrayList<BabyChick> babyChicks = new ArrayList<>();
 
-    public EnemyManager(Playing playing) {
+    public EnemyManager(Playing playing, ObjectManager objectManager) {
         this.playing = playing;
         loadEnemyImgs();
-        addEnemies();
+        addEnemies(objectManager);
     }
 
-    private void addEnemies() {
-        babyChicks = LoadSave.GetBabyChicks();
+    private void addEnemies(ObjectManager objectManager) {
+        babyChicks = LoadSave.GetBabyChicks(objectManager);
         System.out.println("Size of baby chick " + babyChicks.size());
     }
 
@@ -41,11 +44,25 @@ public class EnemyManager {
     }
 
     private void drawBabyChick(Graphics g, int xLvlOffset) {
+        Graphics2D g2d = (Graphics2D) g; // Use Graphics2D for advanced rendering
         for (BabyChick b : babyChicks) {
-            g.drawImage(babyChickArr[b.getEnemyState()][b.getAnimIndex()],
-                    (int) b.getHitbox().x - xLvlOffset, (int) b.getHitbox().y,
-                    BABY_CHICK_WIDTH, BABY_CHICK_HEIGHT,
-                    null);
+            int x = (int) b.getHitbox().x - xLvlOffset;
+            int y = (int) b.getHitbox().y;
+            int width = BABY_CHICK_WIDTH;
+            int height = BABY_CHICK_HEIGHT;
+
+            // Check the enemy's direction and flip if needed
+            if (b.getWalkDir() == ENEMY_DIR_LEFT) {
+                // Flip the image horizontally when walking left
+                g2d.drawImage(babyChickArr[b.getEnemyState()][b.getAnimIndex()],
+                        x + width, y, width, height, null);
+            } else {
+                // Normal drawing when walking right
+                g2d.drawImage(babyChickArr[b.getEnemyState()][b.getAnimIndex()],
+                        x, y, -width, height, null);
+            }
+
+            // Optionally draw the hitbox
             b.drawHitbox(g, xLvlOffset, Color.MAGENTA);
         }
     }

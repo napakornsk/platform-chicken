@@ -11,10 +11,9 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 
 import Entity.BabyChick;
+import object.ObjectManager;
 
-import java.awt.Graphics;
 import java.util.ArrayList;
-import main.Game;
 
 public class LoadSave {
     public static final String PLAYER_ATLAS = "resources/player/player.png";
@@ -29,13 +28,14 @@ public class LoadSave {
     public static final String SMALL_CLOUD = "resources/level/small_clouds.png";
     public static final String ENEMY = "resources/enemy/enemy.png";
     public static final String HEART = "resources/player/heart.png";
-    public static final String BULLET = "resources/enemy/ball.png";
-    public static final String HAYSTACK = "resources/level/haystacks.png";
+    public static final String BULLET = "resources/enemy/bullet.png";
+    public static final String HAYSTACK = "resources/level/haystack.png";
+
     public static BufferedImage GetSpriteAtLast(String filePath) {
         BufferedImage img = null;
         InputStream is = LoadSave.class.getResourceAsStream("/" + filePath);
         if (is == null) {
-            System.out.println("Resource not found!");
+            System.out.println("Resource not found!, filePath: " + filePath);
         }
         try {
             img = ImageIO.read(is);
@@ -46,7 +46,7 @@ public class LoadSave {
         return img;
     }
 
-    public static ArrayList<BabyChick> GetBabyChicks() {
+    public static ArrayList<BabyChick> GetBabyChicks(ObjectManager objectManager) {
         BufferedImage img = GetSpriteAtLast(LEVEL_ONE_ATLAS);
         ArrayList<BabyChick> list = new ArrayList<>();
 
@@ -55,7 +55,7 @@ public class LoadSave {
                 Color color = new Color(img.getRGB(i, j));
                 int value = color.getGreen();
                 if (value == BABY_CHICK) {
-                    list.add(new BabyChick(i * TILE_SIZE, j * TILE_SIZE));
+                    list.add(new BabyChick(i * TILE_SIZE, j * TILE_SIZE, objectManager));
                 }
             }
 
