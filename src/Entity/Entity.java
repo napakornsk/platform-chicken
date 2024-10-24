@@ -1,7 +1,5 @@
 package Entity;
 
-import static main.Game.SCALE;
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
@@ -12,6 +10,7 @@ public abstract class Entity {
     protected float x, y;
     protected float width, height;
     protected Rectangle2D.Float hitbox;
+    protected float airSpeed;
 
     public Entity(float x, float y, float width, float height) {
         this.x = x;

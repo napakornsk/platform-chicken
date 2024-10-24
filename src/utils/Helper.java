@@ -36,10 +36,11 @@ public class Helper {
             int xTile, int yTile, int[][] lvlData) {
         int value = lvlData[yTile][xTile];
 
-        if (value > 3 || value < 0 || value != 3) {
-            return true;
-        } else {
-            return false;
+        switch (value) {
+            case 3:
+                return false;
+            default:
+                return true;
         }
     }
 
@@ -84,17 +85,21 @@ public class Helper {
             return IsSolid(hitbox.x + xSpeed, hitbox.y + hitbox.height + 1, lvlData);
     }
 
-    public static boolean IsAllTileWalkable(
-            int xStart, int xEnd, int y, int[][] lvlData) {
-        for (int i = 0; i < xEnd - xStart; i++) {
-            if (IsSolid(xStart + i, y, lvlData))
-                return false;
+    public static boolean IsAllTileClear(int xStart, int xEnd, int y, int[][] lvlData) {
+		for (int i = 0; i < xEnd - xStart; i++)
+			if (IsTileSolid(xStart + i, y, lvlData))
+				return false;
+		return true;
+	}
 
-            if (!IsSolid(xStart + i, y + 1, lvlData))
-                return false;
-        }
-        return true;
-    }
+	public static boolean IsAllTileWalkable(int xStart, int xEnd, int y, int[][] lvlData) {
+		if (IsAllTileClear(xStart, xEnd, y, lvlData))
+			for (int i = 0; i < xEnd - xStart; i++) {
+				if (!IsTileSolid(xStart + i, y + 1, lvlData))
+					return false;
+			}
+		return true;
+	}
 
     public static boolean IsSightClear(int[][] lvlData, Rectangle2D.Float enemyBox, Rectangle2D.Float playerBox,
             int yTile) {

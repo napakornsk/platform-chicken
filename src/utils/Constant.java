@@ -2,7 +2,44 @@ package utils;
 
 import static main.Game.SCALE;
 
+import main.Game;
+
 public class Constant {
+    public static class Entity {
+        public static final float GRAVITY = 0.04f * Game.SCALE;
+        public static final float ANIM_SPEED = 25;
+    }
+
+    public static class ObjectConstants {
+        public static final int HAYSTACK = 5;
+        
+        public static final int HAYSTACK_WIDTH_DEFAULT = 32;
+        public static final int HAYSTACK_HEIGHT_DEFAULT = 32;
+
+        public static final int HAYSTACK_WIDTH = (int) (SCALE * HAYSTACK_WIDTH_DEFAULT);
+        public static final int HAYSTACK_HEIGHT = (int) (SCALE * HAYSTACK_HEIGHT_DEFAULT);
+    
+        public static int GetSpriteAmount(int objType) {
+            switch (objType) {
+                case HAYSTACK:
+                    return 8;
+                default:
+                    return 1;
+            }
+        }
+    }
+
+    public static class Projectile {
+        public static final int BULLET_DEFAULT_WIDTH = 15;
+        public static final int BULLET_DEFAULT_HEIGHT = 15;
+
+        public static final int BULLET_WIDTH = (int) (BULLET_DEFAULT_WIDTH * SCALE);
+        public static final int BULLET_HEIGHT = (int) (BULLET_DEFAULT_HEIGHT * SCALE);
+        
+        public static final float SPEED = 0.5f * SCALE;
+    }
+
+
     public static class EnemyConstants {
         public static final int BABY_CHICK = 10;
 

@@ -12,9 +12,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 import Entity.EnemyManager;
+
 import Entity.Player;
 import level.LevelManager;
 import main.Game;
+import object.ObjectManager;
 import utils.LoadSave;
 import static utils.Constant.Environment.*;
 import java.util.ArrayList;
@@ -39,6 +41,9 @@ public class Playing extends State implements StateMethod {
     int[] smallCloudPos;
     Random rnd = new Random();
 
+    // objects
+    ObjectManager objectManager;
+
     public Playing(Game game) {
         super(game);
         initClasses();
@@ -56,6 +61,7 @@ public class Playing extends State implements StateMethod {
         enemyManager = new EnemyManager(this);
         player = new Player(200, 400, Game.TILE_SIZE * 1.2f, Game.TILE_SIZE * 1.2f);
         player.loadLvlData(levelManager.getCurrentLevel().getLevelData());
+        objectManager = new ObjectManager(this);
     }
 
     @Override
@@ -63,9 +69,10 @@ public class Playing extends State implements StateMethod {
         levelManager.update();
         player.update();
         enemyManager.update(
-                levelManager.getCurrentLevel().getLevelData(),
-                player);
-
+            levelManager.getCurrentLevel().getLevelData(),
+            player);
+            
+        objectManager.update();
         checkCloseToBoder();
     }
 
@@ -88,6 +95,9 @@ public class Playing extends State implements StateMethod {
         levelManager.draw(g, xLvlOffset);
         player.render(g, xLvlOffset);
         enemyManager.draw(g, xLvlOffset);
+        // g.drawImage(objectManager.getHaystackSprite(), 100, 100, 256, 32, null);
+        objectManager.draw(g, xLvlOffset);
+
     }
 
     private void drawClouds(Graphics g) {
@@ -163,5 +173,9 @@ public class Playing extends State implements StateMethod {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public ObjectManager getObjectManager() {
+        return objectManager;
     }
 }

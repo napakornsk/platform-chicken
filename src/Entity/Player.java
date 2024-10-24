@@ -12,6 +12,7 @@ import static main.Game.SCALE;
 import static main.Game.TILE_SIZE;
 import static utils.Constant.Directions.*;
 import static utils.Helper.*;
+import static utils.Constant.Entity.*;
 
 public class Player extends Entity {
 
@@ -20,6 +21,7 @@ public class Player extends Entity {
     int animTick, animIndex, animSpeed = 40;
     int playerAction = RIGHT;
     int playerDir = 0;
+    // int collected = 0;
     boolean isMoving = true, isActaking = false;
     int[][] lvlData;
     float xDrawOffset = 2 * Game.SCALE;
@@ -27,7 +29,6 @@ public class Player extends Entity {
 
     // Jumping / Gravity
     float airSpeed = 0f;
-    float gravity = 0.04f * Game.SCALE;
     float jumpSpeed = -3f * Game.SCALE;
     float fallSpeedAfterCollision = 0.5f * Game.SCALE;
     boolean inAir = false;
@@ -148,7 +149,7 @@ public class Player extends Entity {
                     hitbox.width, hitbox.height,
                     lvlData)) {
                 hitbox.y += airSpeed;
-                airSpeed += gravity;
+                airSpeed += GRAVITY;
                 updateXPos(xSpeed);
             } else {
                 hitbox.y = GetEntityYPosUnderRoofOrAboveFloor(hitbox, airSpeed);

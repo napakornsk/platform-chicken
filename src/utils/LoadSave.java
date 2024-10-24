@@ -29,7 +29,8 @@ public class LoadSave {
     public static final String SMALL_CLOUD = "resources/level/small_clouds.png";
     public static final String ENEMY = "resources/enemy/enemy.png";
     public static final String HEART = "resources/player/heart.png";
-
+    public static final String BULLET = "resources/enemy/ball.png";
+    public static final String HAYSTACK = "resources/level/haystacks.png";
     public static BufferedImage GetSpriteAtLast(String filePath) {
         BufferedImage img = null;
         InputStream is = LoadSave.class.getResourceAsStream("/" + filePath);

@@ -7,10 +7,10 @@ import static utils.Helper.CanMoveHere;
 import static utils.Helper.GetEntityYPosUnderRoofOrAboveFloor;
 import static utils.Helper.isEntityOnFloor;
 
-import java.awt.geom.Rectangle2D;
 
 import static utils.Helper.IsFloor;
 import static utils.Helper.IsSightClear;
+import static utils.Constant.Entity.*;
 import static utils.Constant.Directions.*;
 
 public abstract class Enemy extends Entity {
@@ -19,7 +19,7 @@ public abstract class Enemy extends Entity {
     protected int animTick, animSpeed = 25;
     protected boolean firstUpdate = true;
     protected boolean inAir = false;
-    protected float fallSpeed;
+    // protected float fallSpeed;
     protected float gravity = 0.04f * SCALE;
     protected float walkSpeed = 0.4f * SCALE;
     protected int walkDir = ENEMY_DIR_LEFT;
@@ -42,14 +42,14 @@ public abstract class Enemy extends Entity {
 
     protected void updateInAir(int[][] lvlData) {
         if (CanMoveHere(
-                hitbox.x, hitbox.y + fallSpeed,
+                hitbox.x, hitbox.y + airSpeed,
                 hitbox.width, hitbox.height,
                 lvlData)) {
-            hitbox.y += fallSpeed;
-            fallSpeed += gravity;
+                    hitbox.y += airSpeed;
+                    airSpeed += GRAVITY;
         } else {
             inAir = false;
-            hitbox.y = GetEntityYPosUnderRoofOrAboveFloor(hitbox, fallSpeed);
+            hitbox.y = GetEntityYPosUnderRoofOrAboveFloor(hitbox, airSpeed);
             tileY = (int) (hitbox.y / TILE_SIZE);
         }
     }
@@ -87,24 +87,13 @@ public abstract class Enemy extends Entity {
     protected boolean canSeePlayer(int[][] lvlData, Player player) {
         int playerTileY = (int) (player.getHitbox().y / TILE_SIZE);
         int absYDiff = Math.abs(playerTileY - tileY);
-        int verticalRange = 1;
-        // Debugging output
-        // System.out.println("Player Tile Y: " + playerTileY + ", Enemy Tile Y: " +
-        // tileY + ", Abs Y Diff: " + absYDiff);
-        // System.out.println("Vertical Range: " + verticalRange);
-        // System.out.println("Y Difference Check: " + (absYDiff <= verticalRange));
-
+        int verticalRange = 0;
         if (absYDiff <= verticalRange) {
             if (isPlayerInRange(player)) {
-                if (IsSightClear(lvlData, hitbox, player.hitbox, tileY)) {
-                    // System.out.println("canSeePlayer: true in range " + (player.hitbox.x -
-                    // hitbox.x));
-                    return true;
-                } else {
-                    // System.out.println("canSeePlayer: false due to obstacles.");
-                }
-            } else {
-                // System.out.println("canSeePlayer: false due to player not in range.");
+                return true;
+                // if (IsSightClear(lvlData, hitbox, player.hitbox, tileY)) {
+                //     return true;
+                // }
             }
         }
 
@@ -123,7 +112,7 @@ public abstract class Enemy extends Entity {
 
     protected boolean isPlayerInRange(Player player) {
         absValue = Math.abs(player.hitbox.x - hitbox.x);
-        detectionRange = attackDistance * 8; // Increase multiplier for longer detection range
+        detectionRange = attackDistance * 5; // Increase multiplier for longer detection range
         return absValue <= detectionRange;
     }
 
