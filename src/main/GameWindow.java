@@ -10,9 +10,9 @@ public class GameWindow extends JFrame {
         JFrame jF = new JFrame();
         jF.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jF.add(gP);
-        jF.setLocationRelativeTo(null);
         jF.setResizable(false);
         jF.pack();
+        jF.setLocationRelativeTo(null);
         jF.setVisible(true);
         jF.addWindowFocusListener(new WindowFocusListener() {
 

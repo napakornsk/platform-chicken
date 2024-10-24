@@ -20,11 +20,11 @@ public abstract class Entity {
         this.height = height;
     }
 
-    protected void drawHitbox(Graphics g, int xLvlOffset) {
-        g.setColor(Color.BLUE);
+    protected void drawHitbox(Graphics g, int xLvlOffset, Color color) {
+        g.setColor(color);
         g.drawRect(
                 (int) (hitbox.x - xLvlOffset), // Apply xLvlOffset to hitbox X
-                (int) (hitbox.y), // Assuming no vertical camera movement
+                (int) (hitbox.y),
                 (int) hitbox.width,
                 (int) hitbox.height);
     }

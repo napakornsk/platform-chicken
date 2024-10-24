@@ -9,6 +9,7 @@ import static utils.Constant.EnemyConstants.BABY_CHICK_WIDTH;
 import static utils.Constant.EnemyConstants.BABY_CHICK_WIDTH_DEFAULT;
 
 import java.awt.image.BufferedImage;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
@@ -28,14 +29,15 @@ public class EnemyManager {
         System.out.println("Size of baby chick " + babyChicks.size());
     }
 
-    public void update() {
+    public void update(int[][] lvlData, Player player) {
         for (BabyChick b : babyChicks) {
-            b.update();
+            b.update(lvlData, player);
         }
     }
 
     public void draw(Graphics g, int xLvlOffset) {
         drawBabyChick(g, xLvlOffset);
+
     }
 
     private void drawBabyChick(Graphics g, int xLvlOffset) {
@@ -44,6 +46,7 @@ public class EnemyManager {
                     (int) b.getHitbox().x - xLvlOffset, (int) b.getHitbox().y,
                     BABY_CHICK_WIDTH, BABY_CHICK_HEIGHT,
                     null);
+            b.drawHitbox(g, xLvlOffset, Color.MAGENTA);
         }
     }
 

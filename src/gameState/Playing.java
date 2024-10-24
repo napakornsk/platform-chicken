@@ -17,6 +17,7 @@ import level.LevelManager;
 import main.Game;
 import utils.LoadSave;
 import static utils.Constant.Environment.*;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Playing extends State implements StateMethod {
@@ -61,7 +62,10 @@ public class Playing extends State implements StateMethod {
     public void update() {
         levelManager.update();
         player.update();
-        enemyManager.update();
+        enemyManager.update(
+                levelManager.getCurrentLevel().getLevelData(),
+                player);
+
         checkCloseToBoder();
     }
 

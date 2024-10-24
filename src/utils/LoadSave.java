@@ -28,6 +28,7 @@ public class LoadSave {
     public static final String BIG_CLOUD = "resources/level/big_clouds.png";
     public static final String SMALL_CLOUD = "resources/level/small_clouds.png";
     public static final String ENEMY = "resources/enemy/enemy.png";
+    public static final String HEART = "resources/player/heart.png";
 
     public static BufferedImage GetSpriteAtLast(String filePath) {
         BufferedImage img = null;

@@ -1,5 +1,7 @@
 package utils;
 
+import static main.Game.TILE_SIZE;
+
 import java.awt.geom.Rectangle2D;
 import main.Game;
 
@@ -21,13 +23,18 @@ public class Helper {
         int maxWidth = lvlData[0].length * Game.TILE_SIZE;
         if (x < 0 || x >= maxWidth)
             return true;
-        if (y < 0 || y >= Game.GAME_HEIGHT + 20)
+        if (y < 0 || y >= Game.GAME_HEIGHT)
             return true;
 
         float xIndex = x / Game.TILE_SIZE;
         float yIndex = y / Game.TILE_SIZE;
 
-        int value = lvlData[(int) yIndex][(int) xIndex];
+        return IsTileSolid((int) xIndex, (int) yIndex, lvlData);
+    }
+
+    public static boolean IsTileSolid(
+            int xTile, int yTile, int[][] lvlData) {
+        int value = lvlData[yTile][xTile];
 
         if (value > 3 || value < 0 || value != 3) {
             return true;
@@ -69,4 +76,50 @@ public class Helper {
                 return false;
         return true;
     }
+
+    public static boolean IsFloor(Rectangle2D.Float hitbox, float xSpeed, int[][] lvlData) {
+        if (xSpeed > 0)
+            return IsSolid(hitbox.x + hitbox.width + xSpeed, hitbox.y + hitbox.height + 1, lvlData);
+        else
+            return IsSolid(hitbox.x + xSpeed, hitbox.y + hitbox.height + 1, lvlData);
+    }
+
+    public static boolean IsAllTileWalkable(
+            int xStart, int xEnd, int y, int[][] lvlData) {
+        for (int i = 0; i < xEnd - xStart; i++) {
+            if (IsSolid(xStart + i, y, lvlData))
+                return false;
+
+            if (!IsSolid(xStart + i, y + 1, lvlData))
+                return false;
+        }
+        return true;
+    }
+
+    public static boolean IsSightClear(int[][] lvlData, Rectangle2D.Float enemyBox, Rectangle2D.Float playerBox,
+            int yTile) {
+        int firstXTile = (int) (enemyBox.x / Game.TILE_SIZE);
+
+        int secondXTile;
+        if (IsSolid(playerBox.x, playerBox.y + playerBox.height + 1, lvlData))
+            secondXTile = (int) (playerBox.x / Game.TILE_SIZE);
+        else
+            secondXTile = (int) ((playerBox.x + playerBox.width) / Game.TILE_SIZE);
+
+        if (firstXTile > secondXTile)
+            return IsAllTileWalkable(secondXTile, firstXTile, yTile, lvlData);
+        else
+            return IsAllTileWalkable(firstXTile, secondXTile, yTile, lvlData);
+    }
+
+    // public static boolean IsSightClear(
+    // int[][] lvlData, Rectangle2D.Float firstHitbox,
+    // Rectangle2D.Float secondHitbox, int tileY) {
+    // int firstXTile = (int) (firstHitbox.x / TILE_SIZE);
+    // int secondXTile = (int) (secondHitbox.x / TILE_SIZE);
+    // if (firstXTile > secondXTile)
+    // return IsAllTileWalkable(secondXTile, firstXTile, tileY, lvlData);
+    // else
+    // return IsAllTileWalkable(firstXTile, secondXTile, tileY, lvlData);
+    // }
 }

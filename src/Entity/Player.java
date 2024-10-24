@@ -1,5 +1,6 @@
 package Entity;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
@@ -8,6 +9,7 @@ import utils.LoadSave;
 
 import static utils.Constant.PlayerConstants.*;
 import static main.Game.SCALE;
+import static main.Game.TILE_SIZE;
 import static utils.Constant.Directions.*;
 import static utils.Helper.*;
 
@@ -29,6 +31,11 @@ public class Player extends Entity {
     float jumpSpeed = -3f * Game.SCALE;
     float fallSpeedAfterCollision = 0.5f * Game.SCALE;
     boolean inAir = false;
+
+    // hp
+    int maxHp = 3;
+    int hp;
+    BufferedImage heartImg;
 
     public boolean isActaking() {
         return isActaking;
@@ -63,8 +70,8 @@ public class Player extends Entity {
     public Player(float x, float y, float width, float height) {
         super(x, y, width, height);
         loadAnimation();
-        initHitbox(30, 32);
-
+        initHitbox(28, 32);
+        hp = maxHp;
     }
 
     public void update() {
@@ -72,13 +79,25 @@ public class Player extends Entity {
         updateAnimTick();
     }
 
+    public void updateHp(Graphics g) {
+        heartImg = LoadSave.GetSpriteAtLast(LoadSave.HEART);
+        for (int i = 0; i < hp; i++) {
+            g.drawImage(heartImg, 10 + (i * TILE_SIZE), 10, (int) width, (int) height, null);
+        }
+    }
+
+    public void hurt() {
+        hp--;
+    }
+
     public void render(Graphics g, int lvlOffset) {
+        updateHp(g);
         g.drawImage(
                 animation[playerAction][animIndex],
                 (int) (hitbox.x - xDrawOffset) - lvlOffset, (int) (hitbox.y - yDrawOffset),
                 (int) width, (int) height,
                 null);
-        // drawHitbox(g, (int) lvlOffset);
+        drawHitbox(g, (int) lvlOffset, Color.BLACK);
     }
 
     public void setDirection(int dir) {

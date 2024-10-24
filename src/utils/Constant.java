@@ -6,9 +6,9 @@ public class Constant {
     public static class EnemyConstants {
         public static final int BABY_CHICK = 10;
 
-        public static final int IDLE = 0;
-        public static final int RUNNING = 1;
-        public static final int ATTACK = 2;
+        public static final int RUNNING = 0;
+        public static final int ATTACK = 1;
+        public static final int IDLE = 2;
 
         public static final int BABY_CHICK_WIDTH_DEFAULT = 32;
         public static final int BABY_CHICK_HEIGHT_DEFAULT = 32;
@@ -16,14 +16,17 @@ public class Constant {
         public static final int BABY_CHICK_WIDTH = (int) (BABY_CHICK_WIDTH_DEFAULT * SCALE);
         public static final int BABY_CHICK_HEIGHT = (int) (BABY_CHICK_HEIGHT_DEFAULT * SCALE);
 
+        public static final int BABY_CHICK_DRAWOFFFSET_X = (int) (31 * SCALE);
+        public static final int BABY_CHICK_DRAWOFFFSET_Y = (int) (29 * SCALE);
+
         public static int GetSpriteAmount(int enemyType, int enemyState) {
             switch (enemyType) {
                 case BABY_CHICK:
                     switch (enemyState) {
                         case IDLE:
-                            return 3;
+                            return 4;
                         case RUNNING:
-                            return 1;
+                            return 4;
                         case ATTACK:
                             return 2;
                     }
@@ -60,6 +63,8 @@ public class Constant {
     public static class Directions {
         public static final int DIR_RIGHT = 0;
         public static final int DIR_LEFT = 4;
+        public static final int ENEMY_DIR_LEFT = 0;
+        public static final int ENEMY_DIR_RIGHT = 2;
 
     }
 
